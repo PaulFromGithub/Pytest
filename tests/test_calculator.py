@@ -1,19 +1,21 @@
 import pytest
+from contextlib import nullcontext as not_raise
 
 from func.calculator import Calculator
 
 
 class TestCalculator:
-    @pytest.mark.parametrize("x, y, result",
+    @pytest.mark.parametrize("x, y, result, expectation",
         [
-        (2, 3, 5),
-        (10, 100, 110),
-        (-1, 2, 1),
-        (5, "5", 25),
+        (2, 3, 5, not_raise()),
+        (10, 100, 110, not_raise()),
+        (-1, 2, 1, not_raise()),
+        (5, "5", 25, pytest.raises(TypeError)),
         ]
     )
-    def test_add(self, x, y, result):
-        assert Calculator().add(x, y) == result
+    def test_add(self, x, y, result, expectation ):
+        with expectation:
+            assert Calculator().add(x, y) == result
 
     @pytest.mark.parametrize("x, y, result",
         [
